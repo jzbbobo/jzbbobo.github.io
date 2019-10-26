@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"default"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: true,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="深度学习的框架很多，有Theano、keras、DeepLearnToolBox等等，caffe主要注重模块化和运行速度，是目前引用率较高的一个工具箱。本次环境的搭建是在ubuntu14.04下搭建。参照官方的安指南Ubuntu Installation 1. 安装依赖库这一步主要是安装opencv库、google的protobuf、boost、等等。这些都只需要一步搞定： 12sudo apt-">
+<meta name="keywords" content="deep learning,caffe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="install caffe in Ubuntu 14.04">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2015&#x2F;11&#x2F;11&#x2F;install-caffe-in-ubuntu-14-04&#x2F;index.html">
+<meta property="og:site_name" content="jzbbobo">
+<meta property="og:description" content="深度学习的框架很多，有Theano、keras、DeepLearnToolBox等等，caffe主要注重模块化和运行速度，是目前引用率较高的一个工具箱。本次环境的搭建是在ubuntu14.04下搭建。参照官方的安指南Ubuntu Installation 1. 安装依赖库这一步主要是安装opencv库、google的protobuf、boost、等等。这些都只需要一步搞定： 12sudo apt-">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-09-15T07:53:52.236Z">
+<meta name="twitter:card" content="summary">
+  <link rel="canonical" href="http://yoursite.com/2015/11/11/install-caffe-in-ubuntu-14-04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>install caffe in Ubuntu 14.04 | jzbbobo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jzbbobo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">谋事在人,成事在天！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-commonweal">
+      
+    
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      
+    
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger">
+          <i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/11/install-caffe-in-ubuntu-14-04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobo">
+      <meta itemprop="description" content="谋事在人,成事在天！">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jzbbobo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            install caffe in Ubuntu 14.04
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2015-11-11 15:02:06" itemprop="dateCreated datePublished" datetime="2015-11-11T15:02:06+08:00">2015-11-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-09-15 15:53:52" itemprop="dateModified" datetime="2018-09-15T15:53:52+08:00">2018-09-15</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">环境配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>深度学习的框架很多，有Theano、keras、DeepLearnToolBox等等，caffe主要注重模块化和运行速度，是目前引用率较高的一个工具箱。<br>本次环境的搭建是在<strong>ubuntu14.04</strong>下搭建。参照官方的安指南<a href="http://caffe.berkeleyvision.org/install_apt.html" target="_blank" rel="noopener">Ubuntu Installation</a></p>
+<h2 id="1-安装依赖库"><a href="#1-安装依赖库" class="headerlink" title="1. 安装依赖库"></a>1. 安装依赖库</h2><p>这一步主要是安装opencv库、google的protobuf、boost、等等。这些都只需要一步搞定：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler</span><br><span class="line">sudo apt-get install --no-install-recommends libboost-all-dev</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是两条命令最好分开执行，两条复制进console可能出现boost没有安装。</p>
+<h2 id="2-安装-BLAS、Imdb等"><a href="#2-安装-BLAS、Imdb等" class="headerlink" title="2. 安装 BLAS、Imdb等"></a>2. 安装 BLAS、Imdb等</h2><p>首先安装 <strong>BLAS</strong>，一共有三种可以选择 <strong>ATLAS</strong>、 <strong>OpenBLAS **和</strong>MKL**，主要的差别在对cpu的调用上，要获得更好的cpu表现就安装OpenBlas或Intel公司的MKL。</p>
+<p>a. 安装 ATLAS</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libatlas-base-dev</span><br></pre></td></tr></table></figure>
+
+<p>b. 安装 OpenBLAS</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libopenblas-dev</span><br></pre></td></tr></table></figure>
+
+<p>c. 安装MKL</p>
+<p>这个是Intel自己开发的工具，是收费的，学生用户可以注册下载，安装包也很大，建议按照<a href="http://www.cnblogs.com/platero/p/3993877.html" target="_blank" rel="noopener" title="比较详细的教程">参考1</a>的安装方法<br>上面三个选一个安装即可，没必要都安装。<br>安装剩下的依赖库：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev</span><br></pre></td></tr></table></figure>
+
+<p>如果你不需要python接口的caffe和cuda，可直接跳到编译步骤。</p>
+<a id="more"></a>
+
+<h2 id="3-安装cuda和cudann"><a href="#3-安装cuda和cudann" class="headerlink" title="3.安装cuda和cudann"></a>3.安装cuda和cudann</h2><blockquote>
+<p><strong>没必要提前安装nvidia显卡驱动，cuda里面已经带了，可以在安装CUDA的时候勾选安装驱动选项即可</strong></p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">a.禁用自带的显卡驱动：</span><br><span class="line">  Vim /etc/modprobe.d/blacklist.conf</span><br><span class="line">  输入以下内容：</span><br><span class="line">  blacklist nouveau</span><br><span class="line">  options nouveau modeset=0</span><br><span class="line">  -------------------------------------------------</span><br><span class="line">  更新内核启动参数：</span><br><span class="line">  sudo update-initramfs -u		//Ubuntu</span><br><span class="line">  sudo dracut --force				//Centos</span><br><span class="line"></span><br><span class="line">b.关闭图形界面</span><br><span class="line">  其中Ubuntu可以参考[1](http://blog.csdn.net/a1311543690/article/details/48861237)</span><br><span class="line">  centos 7图形和命令提示符界面切换：</span><br><span class="line">  systemctl set-default multi-user.target //命令提示符</span><br><span class="line">  systemctl set-default graphical.target  //图形界面</span><br><span class="line">c.重启开始安装cuda(这里我们选择的是.run file进行安装的)</span><br><span class="line">  查看gcc时候安装</span><br><span class="line">  gcc --version</span><br><span class="line">  如果没安装需要手动安装之！</span><br><span class="line">  sudo ./cuda_7.5.18_linux.run  --no-opengl-libs (不要安装opengl这会覆盖cpu中集成显卡的opengl库导致装完进不了图形界面)</span><br><span class="line">  首先driver是肯定要安装的，tookit也是要安装的，sample可选，建议安装下，路径的除了sample都用默认的即/usr/local/cuda</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>安装中按ctrl+c可以跳过长长的阅读协议部分。安装完毕，设置开启图形界面重启ok</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">d.安装cudNN( 这里需要注意，最新版本的可能会不兼容caffe，本文采用cudnn4)</span><br><span class="line">  下载x64位的cudnn压缩包。</span><br><span class="line">   tar xvzf cudnn-7.0-linux-x64-v4.0-prod.tgz</span><br><span class="line">   sudo cp cuda/include/cudnn.h /usr/local/cuda/include</span><br><span class="line">   sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64</span><br><span class="line">   拷贝完这些文件后还需要注意，重新生成链接文件并赋予对应的权限。</span><br><span class="line">   cd /usr/local/cuda/lib64</span><br><span class="line">   rm -rf libcudnn.so libcudnn.so.4   //删除原来的链接</span><br><span class="line">   chmod u=rwx,g=rx,o=rx libcudnn.so.4.0.7 //对目标文件放开权限</span><br><span class="line">   ln -s libcudnn.so.4.0.7 libcudnn.so.4  //设置链接</span><br><span class="line">   ln -s libcudnn.so.4.0.7 libcudnn.so   //同上</span><br><span class="line">e.配置cuda的环境变量：</span><br><span class="line">  PATH变量:</span><br><span class="line">  vim /etc/profile</span><br><span class="line">  输入下面内容：</span><br><span class="line">  PATH=/usr/local/cuda/bin:$PATH</span><br><span class="line">  export PATH</span><br><span class="line">  更新环境变量：</span><br><span class="line">  source /etc/profile</span><br><span class="line">  lib变量:</span><br><span class="line">  cd /etc/ld.so.conf.d/</span><br><span class="line">  vim cuda.conf</span><br><span class="line">  输入下面内容：</span><br><span class="line">  /usr/local/cuda/lib64</span><br><span class="line">  更新环境变量：</span><br><span class="line">  sudo ldconfig</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="4-编译caffe并测试"><a href="#4-编译caffe并测试" class="headerlink" title="4. 编译caffe并测试"></a>4. 编译caffe并测试</h2><p>a.下载caffe</p>
+<p>首先进入你希望caffe放置的位置然后：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/BVLC/caffe.git</span><br></pre></td></tr></table></figure>
+
+<p>b.对 Makefile 文件修改</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp Makefile.config.example Makefile.config</span><br><span class="line">vim Makefile.config</span><br></pre></td></tr></table></figure>
+
+<p>修改的部分主要有：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">-&gt;</span><span class="bash">去掉use cudann 前面的 `<span class="comment">#`注释</span></span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash">因为是安装的openblas，所以还需要修改 BLAS := open</span></span><br><span class="line"><span class="meta">-&gt;</span><span class="bash">需要matlab接口的，先安装matlab，详见[[1]](http://www.cnblogs.com/platero/p/3993877.html)然后修改Makefile.config里面的 -&gt;MATLAB_DIR := /usr/<span class="built_in">local</span> 为 MATLAB_DIR := /usr/<span class="built_in">local</span>/MATLAB/R2014b (对照改成你MATLAB安装的位置)</span></span><br></pre></td></tr></table></figure>
+
+
+<p>c.开始编译和测试</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd caffe-folder</span><br><span class="line">make all -j8 // 8 代表的是线程数，可以加快编译速度</span><br><span class="line">make matcaffe //编译matlab接口</span><br><span class="line"><span class="meta">#</span><span class="bash">开始测试，该步骤可选需要时间教长，对使用无影响，仅用于测试安装是否成功。</span></span><br><span class="line">make test -j8 //编译测试需要的文件</span><br><span class="line">make runtest  // 开始运行测试例子</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-安装python接口"><a href="#5-安装python接口" class="headerlink" title="5. 安装python接口"></a>5. 安装python接口</h2><p>caffe具有python调用的接口，如果需要还得安装一些第三方库，有两种方式可以选择：一是利用linux系统自带的python，然后手动安装一些第三方的包，二是安装Anaconda python。下面分别介绍这两种方法。</p>
+<p><strong>a.</strong> 利用系统自带的python，优点是安装完成后所有用户可以用，缺点很多第三方的库python包需要自己安装，操作不当还有可能破坏系统的python环境。</p>
+<p>首先安装 python-dev、pip</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-dev python-pip git</span><br></pre></td></tr></table></figure>
+
+<p>安装一些python包，具体需要安装的见<code>“ caffe/python/requirements.txt ”</code> 文件内容如下：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">Cython&gt;</span><span class="bash">=0.19.2</span></span><br><span class="line"><span class="meta">numpy&gt;</span><span class="bash">=1.7.1</span></span><br><span class="line"><span class="meta">scipy&gt;</span><span class="bash">=0.13.2</span></span><br><span class="line"><span class="meta">scikit-image&gt;</span><span class="bash">=0.9.3</span></span><br><span class="line"><span class="meta">matplotlib&gt;</span><span class="bash">=1.3.1</span></span><br><span class="line"><span class="meta">ipython&gt;</span><span class="bash">=3.0.0</span></span><br><span class="line"><span class="meta">h5py&gt;</span><span class="bash">=2.2.0</span></span><br><span class="line"><span class="meta">leveldb&gt;</span><span class="bash">=0.191</span></span><br><span class="line"><span class="meta">networkx&gt;</span><span class="bash">=1.8.1</span></span><br><span class="line"><span class="meta">nose&gt;</span><span class="bash">=1.3.0</span></span><br><span class="line"><span class="meta">pandas&gt;</span><span class="bash">=0.12.0</span></span><br><span class="line"><span class="meta">python-dateutil&gt;</span><span class="bash">=1.4,&lt;2</span></span><br><span class="line"><span class="meta">protobuf&gt;</span><span class="bash">=2.5.0</span></span><br><span class="line"><span class="meta">python-gflags&gt;</span><span class="bash">=2.0</span></span><br><span class="line"><span class="meta">pyyaml&gt;</span><span class="bash">=3.10</span></span><br><span class="line"><span class="meta">Pillow&gt;</span><span class="bash">=2.3.0</span></span><br><span class="line"><span class="meta">six&gt;</span><span class="bash">=1.1.0</span></span><br></pre></td></tr></table></figure>
+
+<p>由于大陆网络的原因，python默认的pypi源速度超级慢，在安装这些扩展包之前我们先修改下pip命令默认的软件源,因为一般pip安装时要管理员权限的，所以先切换到root在root下执行以下操作，在别的用户目录下进行下面操作pip修改源不会生效！</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd</span><br><span class="line">mkdir ~/.pip</span><br><span class="line">vim ~/.pip/pip.conf</span><br><span class="line">输入以下内容，其实就是添加默认为清华的源。</span><br><span class="line"></span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">trusted-host = pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面仅仅是修改了<code>pip install</code>安装时候的默认源，观察发现在使用setup.py的时候依然是使用的<strong>pypi.python.org</strong>，这里需要修改distutils的配置。同上切换到root。</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.pydistutils.cfg</span><br><span class="line">输入：</span><br><span class="line">[easy_install]</span><br><span class="line">index_url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+
+<p>这样以后安装的时候都是通过清华的镜像源，速度比较快。</p>
+<p>下面利用命令安装这些库。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/caffe/python/</span><br><span class="line">for req in $(cat requirements.txt); do sudo pip install $req -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn; done</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>中间可能有些包安装失败，比如我安装过程就出现过：<br>distutils.errors.DistutilsError: Could not find suitable distribution for Requirement.parse(‘google-apputils’)</p>
+</blockquote>
+<p>这个时候通过手动安装即可：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip install google-apputils</span><br></pre></td></tr></table></figure>
+
+<p>还需要把caffe下的python路径添加到到path中，这样好处就是不需要先进入caffe/python目录下才能调用caffe的python接口。<br>进入用户目录 打开 “.bashrc ”文件 在文件最后添加：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">set</span> the caffe PYTHONPATH</span></span><br><span class="line">export PYTHONPATH=/path/to/caffe/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
+
+<p>注意上面的路径换成自己的。</p>
+<p><strong>b.</strong> 利用Anaconda python，优点是每个用户可以安装且这个python完全独立于系统的python，而且带的包也很多。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">首先去Anaconda官网下载linux版本的，选择sh执行文件。</span><br><span class="line">比如我下载的是Anaconda2-2.4.1-Linux-x86_64.sh</span><br><span class="line">chmod 755 Anaconda2-2.4.1-Linux-x86_64.sh</span><br><span class="line">./Anaconda2-2.4.1-Linux-x86_64.sh</span><br><span class="line">默认是安装在/home/xxx目录下，并且添加path变量到.bashrc文件中</span><br><span class="line">比如我的是下面这样的</span><br><span class="line">export PATH="/opt/anaconda2/bin:$PATH"</span><br><span class="line">如果希望使用系统自带的python，删除掉上述的记录即可。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>虽然 Anaconda python包括了很多的库，但是也有一些包没有安装，和方法1类似</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/caffe/python/</span><br><span class="line">for req in $(cat requirements.txt); do sudo pip install $req -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn; done</span><br></pre></td></tr></table></figure>
+
+<p>至此python接口需要的库已经安装完毕！</p>
+<p>如果是用的系统自带的python不用修改Make.config中的python设置，如果用的是Anaconda python，则需要修改：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">PYTHON_INCLUDE := /usr/include/python2.7 \</span></span><br><span class="line">                #/usr/lib64/python2.7/site-packages/numpy/core/include</span><br><span class="line"><span class="meta">#</span><span class="bash"> Anaconda Python distribution is quite popular. Include path:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Verify anaconda location, sometimes it<span class="string">'s in root.</span></span></span><br><span class="line"> ANACONDA_HOME := $(HOME)/anaconda   // 修改成anaconda python安装的目录如/home/anaconda2</span><br><span class="line"> PYTHON_INCLUDE := $(ANACONDA_HOME)/include \</span><br><span class="line">                  $(ANACONDA_HOME)/include/python2.7 \</span><br><span class="line">                  $(ANACONDA_HOME)/lib/python2.7/site-packages/numpy/core/include \</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> We need to be able to find libpythonX.X.so or .dylib.</span></span><br><span class="line"><span class="meta">#</span><span class="bash">PYTHON_LIB := /usr/lib</span></span><br><span class="line"> PYTHON_LIB := $(ANACONDA_HOME)/lib</span><br></pre></td></tr></table></figure>
+
+<p><strong>b.</strong> 开始编译编译python接口并添加到path路径</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cd caffe-folder</span><br><span class="line">make pycaffe</span><br><span class="line"><span class="meta">#</span><span class="bash">测试是否成功</span></span><br><span class="line">cd caffe-folder/python</span><br><span class="line">python</span><br><span class="line">import caffe</span><br><span class="line"><span class="meta">#</span><span class="bash">如果上述命令未报错，说明成功</span></span><br><span class="line"><span class="meta">#</span><span class="bash">添加caffe/python 到python path变量</span></span><br><span class="line">vim ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">set</span> the caffe PYTHONPATH</span></span><br><span class="line">export PYTHONPATH=/path/to/caffe/python:$PYTHONPATH</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>！如果是采用的Anaconda python，切记编译python接口在最后执行。</p>
+</blockquote>
+<blockquote>
+<p>！如果是系统自带的python在make pycaffe可能出现python/caffe/_caffe.hpp:8:31: fatal error: numpy/arrayobject.h: No such file or directory<br>这是因为64位的python 库的存放路径问题。</p>
+</blockquote>
+<p>查找<code>arrayobject.h</code>所在的目录：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo find / -name arrayobject.h</span><br></pre></td></tr></table></figure>
+
+<p>然后修改<code>Makefile.config</code>：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PYTHON_INCLUDE := /usr/include/python2.7 \</span><br><span class="line">                /usr/lib64/python2.7/site-packages/numpy   //这里修改成找到的路径！</span><br></pre></td></tr></table></figure>
+
+<p>再测试<code>make pycaffe</code>发现可以。</p>
+<p>输入 <code>python</code> 进入python命令模式下输入<code>import caffe</code> 没有错误说明python接口无误。</p>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6.总结"></a>6.总结</h2><p>参照网上和官方的教程安装多次，主要有这几点需要注意，系统最好是Ubutun14.04 这样安装最简单。还有在安装python的时候可以安装第三方的 <a href="https://store.continuum.io/cshop/anaconda/" target="_blank" rel="noopener">Anaconda</a>。</p>
+<p>参考：</p>
+<p>[1] <a href="http://www.cnblogs.com/platero/p/3993877.html" target="_blank" rel="noopener">http://www.cnblogs.com/platero/p/3993877.html</a></p>
+<p>[2]<a href="http://blog.csdn.net/a1311543690/article/details/48878843" target="_blank" rel="noopener"> http://blog.csdn.net/a1311543690/article/details/48878843</a></p>
+<p>[3] <a href="http://caffe.berkeleyvision.org/installation.html#compilation" target="_blank" rel="noopener">http://caffe.berkeleyvision.org/installation.html#compilation</a></p>
+<p>[4] <a href="http://ju.outofmemory.cn/entry/108631" target="_blank" rel="noopener">http://ju.outofmemory.cn/entry/108631</a></p>
+<p>[5] <a href="http://blog.csdn.net/sloanqin/article/details/49152351" target="_blank" rel="noopener">http://blog.csdn.net/sloanqin/article/details/49152351</a></p>
+<p>[6] <a href="http://www.bubuko.com/infodetail-785289.html" target="_blank" rel="noopener">http://www.bubuko.com/infodetail-785289.html</a></p>
+<p>[7] <a href="http://blog.csdn.net/deeplearninglc007/article/details/40086503" target="_blank" rel="noopener">http://blog.csdn.net/deeplearninglc007/article/details/40086503</a></p>
+<p>[8]<a href="http://www.zhihu.com/question/30091667/answer/47951446" target="_blank" rel="noopener"> http://www.zhihu.com/question/30091667/answer/47951446</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+            
+              <a href="/tags/caffe/" rel="tag"># caffe</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2015/11/09/repair-booting-of-grub/" rel="next" title="修复ubuntu启动项grub">
+                  <i class="fa fa-chevron-left"></i> 修复ubuntu启动项grub
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2015/12/05/setting-centos-source/" rel="prev" title="Centos7配置软件源">
+                  Centos7配置软件源 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装依赖库"><span class="nav-number">1.</span> <span class="nav-text">1. 安装依赖库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装-BLAS、Imdb等"><span class="nav-number">2.</span> <span class="nav-text">2. 安装 BLAS、Imdb等</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-安装cuda和cudann"><span class="nav-number">3.</span> <span class="nav-text">3.安装cuda和cudann</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-编译caffe并测试"><span class="nav-number">4.</span> <span class="nav-text">4. 编译caffe并测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-安装python接口"><span class="nav-number">5.</span> <span class="nav-text">5. 安装python接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-总结"><span class="nav-number">6.</span> <span class="nav-text">6.总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="bobo">
+  <p class="site-author-name" itemprop="name">bobo</p>
+  <div class="site-description" itemprop="description">谋事在人,成事在天！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bobo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/pjax/pjax.min.js?v=0.2.8"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+
+<script src="/js/next-boot.js?v=7.4.2"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>

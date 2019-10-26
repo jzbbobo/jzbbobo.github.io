@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.2">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.2" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.2">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"default"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: true,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1. 制作启动U盘准备工作：4G以上U盘一个，linux系统镜像iso，其中Ubuntu推荐安装长期支持版（LTS），centos推荐6.5或7这里采用的是7.制作启动U盘：制作linux启动盘的软件很多，这里强烈推荐使用rufus这个小工具。主要这个对centos和Windows都很好的支持，像universal usb installers这个Ubuntu官网推荐的工具对centos的支持就不">
+<meta name="keywords" content="ubuntu,centos,服务器环境搭建,CUDA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实验室服务器环境搭建">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;07&#x2F;08&#x2F;building-environment-of-server&#x2F;index.html">
+<meta property="og:site_name" content="jzbbobo">
+<meta property="og:description" content="1. 制作启动U盘准备工作：4G以上U盘一个，linux系统镜像iso，其中Ubuntu推荐安装长期支持版（LTS），centos推荐6.5或7这里采用的是7.制作启动U盘：制作linux启动盘的软件很多，这里强烈推荐使用rufus这个小工具。主要这个对centos和Windows都很好的支持，像universal usb installers这个Ubuntu官网推荐的工具对centos的支持就不">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;i.imgur.com&#x2F;pcW6Go3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;i.imgur.com&#x2F;j4x3dNh.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;i.imgur.com&#x2F;YzjDfOH.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;i.imgur.com&#x2F;vMM1LWG.png">
+<meta property="og:updated_time" content="2018-09-15T07:53:52.238Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;i.imgur.com&#x2F;pcW6Go3.png">
+  <link rel="canonical" href="http://yoursite.com/2016/07/08/building-environment-of-server/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>实验室服务器环境搭建 | jzbbobo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jzbbobo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">谋事在人,成事在天！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-commonweal">
+      
+    
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      
+    
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger">
+          <i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/08/building-environment-of-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobo">
+      <meta itemprop="description" content="谋事在人,成事在天！">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jzbbobo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            实验室服务器环境搭建
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2016-07-08 10:48:06" itemprop="dateCreated datePublished" datetime="2016-07-08T10:48:06+08:00">2016-07-08</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-09-15 15:53:52" itemprop="dateModified" datetime="2018-09-15T15:53:52+08:00">2018-09-15</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">环境配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-制作启动U盘"><a href="#1-制作启动U盘" class="headerlink" title="1. 制作启动U盘"></a>1. 制作启动U盘</h2><p>准备工作：4G以上U盘一个，linux系统镜像iso，其中Ubuntu推荐安装长期支持版（LTS），centos推荐6.5或7这里采用的是7.<br>制作启动U盘：制作linux启动盘的软件很多，这里强烈推荐使用<code>rufus</code>这个小工具。主要这个对centos和Windows都很好的支持，像<code>universal usb installers</code>这个Ubuntu官网推荐的工具对centos的支持就不是很好，制作的启动盘不能直接启动，需要有些修改。<br>打开rufus软件并按照下图所示进行操作等待制作完毕即可。</p>
+<p><img alt data-src="http://i.imgur.com/pcW6Go3.png"></p>
+<h2 id="2-安装系统"><a href="#2-安装系统" class="headerlink" title="2. 安装系统"></a>2. 安装系统</h2><p>U盘插入电脑，开机选择U盘启动（这里一般会出现两个，一个是UEFI,一个是legacy，选择UEFI进去画面会清晰很多），进入install选项开始安装。后面的安装都是设置一些东西比较傻瓜式，记得不要勾选安装第三方软件，要不安装速度很慢。在分区这一步骤中选择something else，后面手动分区。分区记得home目录要大一点，所有的用户主目录都在这里。还有就是 /usr/local/ /tmp swap等，最后还得给boot设置一个分区，这样以后启动项丢失了还能找的回来。具体的分区方案可以参考百度谷歌别人的建议。对于Ubuntu在选择地区这里建议拔掉网线，有时候会因为这个原因卡死。</p>
+<a id="more"></a>
+
+<h2 id="3-配置软件源"><a href="#3-配置软件源" class="headerlink" title="3. 配置软件源"></a>3. 配置软件源</h2><p>！！！谨记不同版本的Ubuntu或者centos软件源是有点不一样的，一定要配置对应版本号的软件源。之所以配置软件源是因为默认的软件源服务器一般在国外，访问速度较慢。</p>
+<h3 id="3-1-Ubuntu-14-04配置软件源"><a href="#3-1-Ubuntu-14-04配置软件源" class="headerlink" title="3.1 Ubuntu 14.04配置软件源"></a>3.1 Ubuntu 14.04配置软件源</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list_backup</span><br><span class="line">sudo gedit /etc/apt/sources.list</span><br><span class="line">在sources.list中增加以下内容</span><br><span class="line"><span class="meta">#</span><span class="bash">education ipv6 <span class="built_in">source</span></span></span><br><span class="line">deb http://mirrors6.ustc.edu.cn/ubuntu/ trusty main multiverse restricted universe</span><br><span class="line">deb http://mirrors6.ustc.edu.cn/ubuntu/ trusty-backports main multiverse restricted universe</span><br><span class="line">deb http://mirrors6.ustc.edu.cn/ubuntu/ trusty-proposed main multiverse restricted universe</span><br><span class="line">deb http://mirrors6.ustc.edu.cn/ubuntu/ trusty-security main multiverse restricted universe</span><br><span class="line">deb http://mirrors6.ustc.edu.cn/ubuntu/ trusty-updates main multiverse restricted universe</span><br><span class="line">deb-src http://mirrors6.ustc.edu.cn/ubuntu/ trusty main multiverse restricted universe</span><br><span class="line">deb-src http://mirrors6.ustc.edu.cn/ubuntu/ trusty-backports main multiverse restricted universe</span><br><span class="line">deb-src http://mirrors6.ustc.edu.cn/ubuntu/ trusty-proposed main multiverse restricted universe</span><br><span class="line">deb-src http://mirrors6.ustc.edu.cn/ubuntu/ trusty-security main multiverse restricted universe</span><br><span class="line">deb-src http://mirrors6.ustc.edu.cn/ubuntu/ trusty-updates main multiverse restricted universe</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</span><br><span class="line">-----------------------------------------------------------------------------------------------</span><br><span class="line"><span class="meta">#</span><span class="bash">更新软件源</span></span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Centos-7配置软件源"><a href="#3-2-Centos-7配置软件源" class="headerlink" title="3.2 Centos 7配置软件源"></a>3.2 Centos 7配置软件源</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo //阿里云的镜像，资源还是比较多的</span><br><span class="line">yum clean all</span><br><span class="line">yum makecache//生成缓存即可</span><br><span class="line">还有一些比较好用的国内源</span><br><span class="line">网易163：http://mirrors.163.com/.help/centos.html</span><br><span class="line">华中科技大学：http://mirrors.hust.edu.cn/help.html#centos</span><br><span class="line">浙江大学：http://mirrors.lifetoy.org/</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">添加RHEL源和一些国外源</span><br><span class="line">yum localinstall http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm -y</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>有时候可能出现404错误，这是因为这个有更新了，打开<a href="http://dl.fedoraproject.org/pub/epel/7/x86_64/e/" target="_blank" rel="noopener">地址</a>搜索epel-release找到对应的地址替换即可。</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">最后生成缓存即可：</span></span><br><span class="line">yum clean all</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-配置python的pip源"><a href="#3-3-配置python的pip源" class="headerlink" title="3.3 配置python的pip源"></a>3.3 配置python的pip源</h3><p>pip是一个python包安装工具，首先安装pip和python的一些库</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install python-devel python-pip			// centos</span><br><span class="line">apt-get install python-dev python-pip		//Ubuntu</span><br></pre></td></tr></table></figure>
+
+<p>默认的pip源也是速度超级慢，这里我们配置为豆瓣或者清华的源。centos和Ubuntu的配置是一样的。<br>首先我们切换到root用户。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">su</span><br><span class="line">mkdir ~/.pip</span><br><span class="line">gedit ~/.pip/pip.conf  //对于centos可以用vim ~/.pip/pip.conf, 可通过sudo yum install vim 安装vim</span><br><span class="line"><span class="meta">#</span><span class="bash">输入以下内容</span></span><br><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">[install]</span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面仅仅是修改了pip install安装时候的默认源，观察发现在使用setup.py的时候依然是使用的pypi.python.org，这里需要修改distutils的配置。同上切换到root。</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.pydistutils.cfg</span><br><span class="line">输入：</span><br><span class="line">[easy_install]</span><br><span class="line">index_url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+
+<p>这样以后安装的时候都是通过清华的镜像源，速度比较快。</p>
+<h2 id="4-安装gcc-gcc-c-cmake"><a href="#4-安装gcc-gcc-c-cmake" class="headerlink" title="4. 安装gcc, gcc-c++, cmake"></a>4. 安装gcc, gcc-c++, cmake</h2><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc</span><br><span class="line">yum install gcc-c++</span><br><span class="line"><span class="meta">#</span><span class="bash">去cmake官网下载源码包编译安装</span></span><br><span class="line">比如我这里下载的是</span><br><span class="line">cmake-3.5.2.tar.gz</span><br><span class="line">tar xzvf cmake-3.5.2.tar.gz</span><br><span class="line">cd cmake-3.5.2</span><br><span class="line">sudo ./bootstrap</span><br><span class="line">sudo gmake</span><br><span class="line">sudo make install</span><br><span class="line"><span class="meta">#</span><span class="bash">验证安装</span></span><br><span class="line">cmake -version</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="http://i.imgur.com/j4x3dNh.png"></p>
+<h2 id="5-配置ssh和添加用户"><a href="#5-配置ssh和添加用户" class="headerlink" title="5. 配置ssh和添加用户"></a>5. 配置ssh和添加用户</h2><h3 id="5-1-Ubuntu-安装ssh-server"><a href="#5-1-Ubuntu-安装ssh-server" class="headerlink" title="5.1 Ubuntu 安装ssh server"></a>5.1 Ubuntu 安装ssh server</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install openssh-server</span><br><span class="line">sudo ps -e |grep ssh   //查看ssh服务是否启动成功</span><br><span class="line">sudo service ssh start  //启动ssh服务</span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改配置文件，设置root用户可以登入</span></span><br><span class="line">sudo gedit /etc/ssh/sshd_config</span><br><span class="line">注释掉下面这行语句：</span><br><span class="line"><span class="meta">#</span><span class="bash"> PermitRootLogin without-password</span></span><br><span class="line">并加入语句：</span><br><span class="line">PermitRootLogin yes</span><br><span class="line">重启ssh服务：</span><br><span class="line">sudo service ssh restart</span><br><span class="line">设置ssh服务开机自启动：</span><br><span class="line">打开/etc/rc.local文件，在exit 0语句前加入：</span><br><span class="line">/etc/init.d/ssh start</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-centos设置ssh-server"><a href="#5-2-centos设置ssh-server" class="headerlink" title="5.2 centos设置ssh server"></a>5.2 centos设置ssh server</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">centos默认已经安装了ssh server</span><br><span class="line">开启ssh服务：</span><br><span class="line">service sshd start</span><br><span class="line">设置ssh开机启动：</span><br><span class="line">chkconfig sshd on</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-添加用户"><a href="#5-3-添加用户" class="headerlink" title="5.3 添加用户"></a>5.3 添加用户</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu和Centos有点差别</span><br><span class="line">useradd 对于ubuntu只会创建用户不会在home目录下生成对应的用户文件。</span><br><span class="line">这里采用adduser</span><br><span class="line">修改用户密码</span><br><span class="line">sudo passwd user</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="6-用户主目录分区挂载"><a href="#6-用户主目录分区挂载" class="headerlink" title="6. 用户主目录分区挂载"></a>6. 用户主目录分区挂载</h2><p>对于每一个新建的用户，在/Home下会有对应的用户文件夹，考虑到数据的安全和可移植性，这里我们希望可以将用户目录挂载到系统盘外的盘上。</p>
+<h3 id="6-1-利用parted对电脑其他盘进行分区和挂载到用户目录"><a href="#6-1-利用parted对电脑其他盘进行分区和挂载到用户目录" class="headerlink" title="6.1 利用parted对电脑其他盘进行分区和挂载到用户目录"></a>6.1 利用parted对电脑其他盘进行分区和挂载到用户目录</h3><p>首先需要对系统盘外的盘进行分区并格式化，利用<code>fdisk -l</code>查看电脑磁盘分布。这里我将5T的盘分成5个分区，对应的盘符是sdd</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">parted /dev/sdd</span><br><span class="line">mklabel</span><br><span class="line">输入gpt</span><br><span class="line">mkpart</span><br><span class="line">输入起始位置和结束位置</span><br><span class="line">！！！上面的操作都是不可逆的</span><br><span class="line">q退出</span><br><span class="line">mkfs.ext4 /dev/xx</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="6-2-开始挂载分区"><a href="#6-2-开始挂载分区" class="headerlink" title="6.2 开始挂载分区"></a>6.2 开始挂载分区</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/fstab</span><br><span class="line"><span class="meta">#</span><span class="bash"> 前面是对应的磁盘和要挂载到的地方，后面是文件系统等等。</span></span><br><span class="line">   /dev/sdd1 /home/qiudan	ext4	defaults0   0</span><br><span class="line">   /dev/sdd1 /home/qiudan	ext4	defaults0   0</span><br><span class="line">   /dev/sdd1 /home/qiudan	ext4	defaults0   0</span><br><span class="line">   /dev/sdd1 /home/qiudan	ext4	defaults0   0</span><br><span class="line">   /dev/sdd1 /home/qiudan	ext4	defaults0   0</span><br><span class="line"><span class="meta">#</span><span class="bash">查看fstab配置时候正确</span></span><br><span class="line">   mount –a</span><br><span class="line">   df -h</span><br><span class="line">   如果正确的话可以看到分区被正确挂载到对应的目录，下面把目录权限给对应的用户：</span><br><span class="line">   sudo chown -R xx:xx xx</span><br></pre></td></tr></table></figure>
+
+
+<p>这个时候切换到对应的用户会发现终端没有显示用户名，这是因为我们挂载的分区缺少一些用户文件，可以通过拷贝获得，并记得授权权限。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp –R /etc/skel/. /home/xxx</span><br><span class="line">sudo chown xx:xx  home/xx/.bash*</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-配置-ftp"><a href="#7-配置-ftp" class="headerlink" title="7. 配置 ftp"></a>7. 配置 <a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html" target="_blank" rel="noopener">ftp</a></h2><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vsftpd</span><br><span class="line">vim /etc/vsftpd.conf</span><br><span class="line">anonymous_enable=Yes</span><br><span class="line">sudo mkdir /srv/files/ftp //希望的ftp文件夹位置</span><br><span class="line">sudo usermod -d /srv/files/ftp ftp //修改ftp文件夹位置配置</span><br><span class="line">sudo restart vsftpd//重启ftp</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-安装CUDA-cudNNs"><a href="#8-安装CUDA-cudNNs" class="headerlink" title="8. 安装CUDA, cudNNs"></a>8. 安装CUDA, cudNNs</h2><blockquote>
+<p><strong>没必要提前安装nvidia显卡驱动，cuda里面已经带了，可以在安装CUDA的时候勾选安装驱动选项即可</strong></p>
+</blockquote>
+<p>在安装cuda之前需要先检查下本机是否支持cuda：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lspci | grep -i nvidia</span><br></pre></td></tr></table></figure>
+
+<p>验证<code>gcc</code>是否安装：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc --version</span><br></pre></td></tr></table></figure>
+<p>如果没有安装：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc</span><br><span class="line">yum install gcc-c++</span><br></pre></td></tr></table></figure>
+
+<p>安装内核头文件和开发包：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install kernel-devel-$(uname -r) kernel-headers-$(uname -r)</span><br></pre></td></tr></table></figure>
+
+<p>接下来：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">a.禁用自带的显卡驱动：</span><br><span class="line">  Vim /etc/modprobe.d/blacklist.conf</span><br><span class="line">   输入以下内容：</span><br><span class="line">    blacklist nouveau</span><br><span class="line">    options nouveau modeset=0</span><br><span class="line">   -------------------------------------------------</span><br><span class="line">	更新内核启动参数：</span><br><span class="line">    sudo update-initramfs -u		//Ubuntu</span><br><span class="line">	sudo dracut --force				//Centos</span><br><span class="line"></span><br><span class="line">b.关闭图形界面</span><br><span class="line">  其中Ubuntu可以参考[1](http://blog.csdn.net/a1311543690/article/details/48861237)</span><br><span class="line">  centos 7图形和命令提示符界面切换：</span><br><span class="line">  systemctl set-default multi-user.target //命令提示符</span><br><span class="line">  systemctl set-default graphical.target  //图形界面</span><br><span class="line">c.重启开始安装cuda(这里我们选择的是.run file进行安装的)</span><br><span class="line">  sudo ./cuda_7.5.18_linux.run  --no-opengl-libs (不要安装opengl这会覆盖cpu中集成显卡的opengl库导致装完进不了图形界面)</span><br><span class="line">首先driver是肯定要安装的，tookit也是要安装的，sample可选，建议安装下，路径的除了sample都用默认的即/usr/local/cuda</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>安装中按ctrl+c可以跳过长长的阅读协议部分。安装完毕，设置开启图形界面重启ok</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">d.安装cudNN( 这里需要注意，最新版本的可能会不兼容caffe，本文采用cudnn4)</span><br><span class="line">	下载x64位的cudnn压缩包。</span><br><span class="line">    tar xvzf cudnn-7.0-linux-x64-v4.0-prod.tgz</span><br><span class="line">    sudo cp cuda/include/cudnn.h /usr/local/cuda/include</span><br><span class="line">    sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64</span><br><span class="line">    拷贝完这些文件后还需要注意，重新生成链接文件并赋予对应的权限。</span><br><span class="line">	cd /usr/local/cuda/lib64</span><br><span class="line">	rm -rf libcudnn.so libcudnn.so.4   //删除原来的链接</span><br><span class="line">    chmod u=rwx,g=rx,o=rx libcudnn.so.4.0.7 //对目标文件放开权限</span><br><span class="line">    ln -s libcudnn.so.4.0.7 libcudnn.so.4  //设置链接</span><br><span class="line">    ln -s libcudnn.so.4.0.7 libcudnn.so   //同上</span><br><span class="line">e.配置cuda的环境变量：</span><br><span class="line">	PATH变量:</span><br><span class="line">	vim /etc/profile</span><br><span class="line">	输入下面内容：</span><br><span class="line">	PATH=/usr/local/cuda/bin:$PATH</span><br><span class="line">	export PATH</span><br><span class="line">	更新环境变量：</span><br><span class="line">	source /etc/profile</span><br><span class="line">	lib变量:</span><br><span class="line">	cd /etc/ld.so.conf.d/</span><br><span class="line">	vim cuda.conf</span><br><span class="line">	输入下面内容：</span><br><span class="line">	/usr/local/cuda/lib64</span><br><span class="line">	更新环境变量：</span><br><span class="line">	sudo ldconfig</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-安装FFmpeg"><a href="#9-安装FFmpeg" class="headerlink" title="9. 安装FFmpeg"></a>9. 安装FFmpeg</h2><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">----安装一些依赖库---------------</span><br><span class="line"><span class="meta">#</span><span class="bash">安装汇编指令集yasm（必须）</span></span><br><span class="line">sudo yum install yasm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">安装libass（可选）</span></span><br><span class="line">sudo yum install libass-devel libav*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">安装H.264编码器 （可选）</span></span><br><span class="line">从 http://www.videolan.org/developers/x264.html 下载源码包</span><br><span class="line"><span class="meta">#</span><span class="bash">解压源码包</span></span><br><span class="line">tar -xjvf /path/to/x264-snapshot-20080805-2245.tar.bz2</span><br><span class="line"><span class="meta">#</span><span class="bash">开始configure并安装H.264</span></span><br><span class="line">cd /path/to/x264-dir</span><br><span class="line">./configure --enable-shared</span><br><span class="line">make -j8</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上述安装完毕后还需配置x264的lib到系统path变量，否则运行ffmpeg会出现 error while loading shared libraries: libavdevice.so.52: cannot open shared object file: No such file or directory</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">配置x264</span></span><br><span class="line">sudo vim /etc/ld.so.conf.d/custom-libs.conf</span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加/usr/<span class="built_in">local</span>/lib 到系统的lib索引</span></span><br><span class="line">/usr/local/lib</span><br><span class="line"><span class="meta">#</span><span class="bash"> update to make it work</span></span><br><span class="line">sudo ldconfig</span><br><span class="line">sudo updatedb</span><br><span class="line"></span><br><span class="line">---开始安装FFmpeg----------</span><br><span class="line"><span class="meta">#</span><span class="bash">下载FFmpeg源码包</span></span><br><span class="line">git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg</span><br><span class="line"><span class="meta">#</span><span class="bash">configure</span></span><br><span class="line">cd FFmpeg-master</span><br><span class="line">sudo ./configure --enable-libass --enable-libx264 --enable-gpl --enable-shared --prefix=/usr/local/ffmpeg</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上述命令按照需要修改，如果没安装libass和x264则不要enable否则会出错</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">开始make</span></span><br><span class="line">make -j8</span><br><span class="line">sudo make install  //因为安装到的路径是 /usr/local/ 需要root权限</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">配置FFmpeg的lib库</span></span><br><span class="line">sudo vim /etc/ld.so.conf.d/ffmpeg.conf</span><br><span class="line"><span class="meta">#</span><span class="bash">输入以下内容：</span></span><br><span class="line">/usr/local/ffmpeg/lib/   // /usr/local/ 和上面configure设置的路径要一致</span><br><span class="line"><span class="meta">#</span><span class="bash">保存并使之生效</span></span><br><span class="line">sudo ldconfig</span><br><span class="line"><span class="meta">#</span><span class="bash">设置ffmpeg的path变量</span></span><br><span class="line">sudo vim /etc/profile/</span><br><span class="line">export PATH=/usr/local/ffmpeg/bin:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">添加路径到PKG_CONFIG_PATH</span></span><br><span class="line">sudo yum install pkgconfig.x86_64  //可能未安装PKG_CONFIG_PATH</span><br><span class="line">sudo vim /etc/profile/</span><br><span class="line">export PKG_CONFIG_PATH=/usr/local/ffmpeg/lib/pkgconfig:$PKG_CONFIG_PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">保存并生效，更新db</span></span><br><span class="line">source /etc/profile</span><br><span class="line">sudo updatedb   //有时候添加到了环境变量不生效，但是又不能重启，执行该条命令很有效。</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">查看ffmpeg版本</span></span><br><span class="line">ffmpeg -version</span><br><span class="line"><span class="meta">#</span><span class="bash">比如我这台电脑如下：</span></span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">[zhengbo@mediaszu ~]$ ffmpeg -version</span><br><span class="line">ffmpeg version 3.0.git Copyright (c) 2000-2016 the FFmpeg developers</span><br><span class="line">built with gcc 4.8.5 (GCC) 20150623 (Red Hat 4.8.5-4)</span><br><span class="line">configuration: --enable-shared --prefix=/usr/local/ffmpeg</span><br><span class="line">libavutil      55. 28.100 / 55. 28.100</span><br><span class="line">libavcodec     57. 48.102 / 57. 48.102</span><br><span class="line">libavformat    57. 41.100 / 57. 41.100</span><br><span class="line">libavdevice    57.  0.102 / 57.  0.102</span><br><span class="line">libavfilter     6. 47.100 /  6. 47.100</span><br><span class="line">libswscale      4.  1.100 /  4.  1.100</span><br><span class="line">libswresample   2.  1.100 /  2.  1.100</span><br><span class="line">------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-源码编译安装opencv-2-4-xx"><a href="#10-源码编译安装opencv-2-4-xx" class="headerlink" title="10. 源码编译安装opencv 2.4.xx"></a>10. 源码编译安装opencv 2.4.xx</h2><p>在正式安装opencv之前需要安装一些依赖包，下面是<a href="http://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html" target="_blank" rel="noopener">官网</a>给出的指南：<br><img alt data-src="http://i.imgur.com/YzjDfOH.png"></p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> GCC和ffmpeg还有pkg-config，python-dev前面已经安装</span></span><br><span class="line">sudo yum install gtk2 gtk2-devel gtk2-devel-docs</span><br><span class="line">sudo pip install numpy</span><br><span class="line">sudo yum install libjpg-devel libpng-devel libtiff-devel libjasper-devel</span><br></pre></td></tr></table></figure>
+
+<p>下载opencv的源码包，比如我下载的是<code>opencv-2.4.13.zip</code></p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">解压源码包</span></span><br><span class="line">unzip opencv-2.4.13.zip -d ~/</span><br><span class="line"><span class="meta">#</span><span class="bash">进入源码包</span></span><br><span class="line">cd ~/opecv-2.4.13</span><br><span class="line">mkdir release</span><br><span class="line">cd release</span><br><span class="line"><span class="meta">#</span><span class="bash">开始设置cmake</span></span><br><span class="line">cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..   //注意后面有两个点</span><br><span class="line"><span class="meta">#</span><span class="bash">等待片刻后可以看到生成了Makefile，下面开始make，可以开启多线程</span></span><br><span class="line">make -j8</span><br><span class="line"><span class="meta">#</span><span class="bash">开始安装</span></span><br><span class="line">sudo make install</span><br><span class="line"><span class="meta">#</span><span class="bash">因为上面的安装路径设置的是<span class="string">"/usr/local/"</span>,故此path不需要额外配置环境变量。</span></span><br><span class="line"><span class="meta">#</span><span class="bash">下面配置lib变量和注册下包的信息</span></span><br><span class="line">sudo vim /etc/ld.so.conf.d/custom-libs.conf   //名字任意</span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加/usr/<span class="built_in">local</span>/lib 到系统的lib索引，如果之前有添加过则不用</span></span><br><span class="line">/usr/local/lib</span><br><span class="line"><span class="meta">#</span><span class="bash"> update to make it work</span></span><br><span class="line">sudo ldconfig</span><br><span class="line">sudo updatedb</span><br><span class="line"><span class="meta">#</span><span class="bash">配置PKG_CONFIG_PATH</span></span><br><span class="line">sudo vim /etc/profile</span><br><span class="line">export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">保存后<span class="built_in">source</span>，更新db</span></span><br><span class="line">source /etc/profile</span><br><span class="line">sudo updatedb</span><br><span class="line"><span class="meta">#</span><span class="bash">查看opencv版本信息</span></span><br><span class="line">pkg-config --modversion opencv</span><br><span class="line"><span class="meta">#</span><span class="bash">比如我的出现下面</span></span><br><span class="line">2.4.13</span><br></pre></td></tr></table></figure>
+
+<p>下面继续配置opencv的python接口，参考<a href="http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_setup/py_setup_in_fedora/py_setup_in_fedora.html#install-opencv-python-in-fedora" target="_blank" rel="noopener">官网</a>，由于我们opencv采用的是源码安装，所以只需要将一些文件拷贝到python包下即可。</p>
+<blockquote>
+<p>需要注意的是python-devel包需要安装，否则源码编译安装的opencv没有python接口</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">方法1，拷贝文件</span></span><br><span class="line">sudo cp /usr/local/lib/python2.7/site-packages/cv2.so /usr/lib/python2.7/site-packages</span><br><span class="line"><span class="meta">#</span><span class="bash">方法2，添加路径到PATH</span></span><br><span class="line">sudo vim /etc/profile</span><br><span class="line">export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages</span><br><span class="line">source /etc/profile</span><br><span class="line"><span class="meta">#</span><span class="bash">测试接口</span></span><br><span class="line">python</span><br><span class="line">import cv2</span><br><span class="line">print cv2.__version__</span><br></pre></td></tr></table></figure>
+
+<h2 id="11-安装tensorflow"><a href="#11-安装tensorflow" class="headerlink" title="11. 安装tensorflow"></a>11. 安装tensorflow</h2><p>方法1.源码安装  –&gt;主要针对cundnn5需要源码安装，官方编译好的并不支持cudnn5</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">a. 安装Bazel，这里我们选择源码安装</span><br><span class="line">安装之前需要先配置JAVA的环境变量，因为系统默认安装的是openjdk并没有配置JAVA_HOME</span><br><span class="line">这里我选择先删除系统自带的openjdk，安装官方的JDK8</span><br><span class="line"><span class="meta">#</span><span class="bash">查询系统自带的jdk有哪些</span></span><br><span class="line">	rpm -qa | grep jdk</span><br><span class="line"><span class="meta">#</span><span class="bash">开始删除</span></span><br><span class="line">	sudo yum remove name //name是上面查出的包的名字，可以用通配符匹配删除所有的</span><br><span class="line"><span class="meta">#</span><span class="bash">安装Oracle JDK8</span></span><br><span class="line"><span class="meta">#</span><span class="bash">http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html</span></span><br><span class="line"><span class="meta">#</span><span class="bash">选择linux 64位的tar.gz包，比如这里我下载的是<span class="string">'jdk-8u91-linux-x64.tar.gz'</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">解压所，建议放到/usr/<span class="built_in">local</span></span></span><br><span class="line">   tar tar zxvf jdk*.tar.gz -C /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">配置环境变量,注意文件夹名字</span></span><br><span class="line">  sudo vim /etc/profile</span><br><span class="line"><span class="meta">  #</span><span class="bash"><span class="built_in">set</span> java environment</span></span><br><span class="line">  export JAVA_HOME=/usr/local/jdk1.8.0_60   </span><br><span class="line">  export JRE_HOME=/usr/local/jdk1.8.0_60/jre  </span><br><span class="line">  export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH   </span><br><span class="line">  export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$JAVA_HOME:$PATH</span><br><span class="line"><span class="meta">#</span><span class="bash">更新</span></span><br><span class="line">  source /etc/profile</span><br><span class="line"><span class="meta">#</span><span class="bash">验证</span></span><br><span class="line">  java -version</span><br><span class="line"><span class="meta">#</span><span class="bash">下载bazel源码包</span></span><br><span class="line">  git clone https://github.com/bazelbuild/bazel.git</span><br><span class="line">  cd bazel</span><br><span class="line">  ./compile.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">等待几分钟后完毕，生成一个bazel的可执行文件</span></span><br><span class="line">  sudo cp ~/bazel-master/output/bazel /usr/local/bin</span><br><span class="line">b.下载tensorflow源码包</span><br><span class="line">	git clone https://github.com/tensorflow/tensorflow</span><br><span class="line">	cd tensorflow-master</span><br><span class="line">	./configure</span><br></pre></td></tr></table></figure>
+
+
+<p>如下图：</p>
+<p><img alt data-src="http://i.imgur.com/vMM1LWG.png"></p>
+<blockquote>
+<p>这里我们直接回车即可，没必要像上图单独指定，采用default即可。</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">c.build 源码包并生成pip安装包</span><br><span class="line">  bazel build -c opt --config=cuda //tensorflow/tools/pip_package:build_pip_package</span><br><span class="line">  上述命令需要下载，需等待片刻</span><br><span class="line"><span class="meta">  #</span><span class="bash">生成 pip安装包</span></span><br><span class="line">  bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg</span><br><span class="line"><span class="meta">  #</span><span class="bash">pip安装tensorflow</span></span><br><span class="line">  sudo pip install /tmp/tensorflow_pkg/tensorflow-0.9.0-py2-none-any.whl</span><br><span class="line"></span><br><span class="line">d. 测试安装</span><br><span class="line"> cd tensorflow-master/models/image/mnist</span><br><span class="line"> python convolutional.py</span><br><span class="line"><span class="meta"> #</span><span class="bash">出现下面界面说明安装成功</span></span><br><span class="line"> Successfully downloaded train-images-idx3-ubyte.gz 9912422 bytes.</span><br><span class="line"> Successfully downloaded train-labels-idx1-ubyte.gz 28881 bytes.</span><br><span class="line"> Successfully downloaded t10k-images-idx3-ubyte.gz 1648877 bytes.</span><br><span class="line"> Successfully downloaded t10k-labels-idx1-ubyte.gz 4542 bytes.</span><br><span class="line"> Extracting data/train-images-idx3-ubyte.gz</span><br><span class="line"> Extracting data/train-labels-idx1-ubyte.gz</span><br><span class="line"> Extracting data/t10k-images-idx3-ubyte.gz</span><br><span class="line"> Extracting data/t10k-labels-idx1-ubyte.gz</span><br><span class="line"> Initialized!</span><br><span class="line"> Epoch 0.00</span><br><span class="line"> Minibatch loss: 12.054, learning rate: 0.010000</span><br><span class="line"> Minibatch error: 90.6%</span><br><span class="line"> Validation error: 84.6%</span><br><span class="line"> Epoch 0.12</span><br><span class="line"> Minibatch loss: 3.285, learning rate: 0.010000</span><br><span class="line"> Minibatch error: 6.2%</span><br><span class="line"> Validation error: 7.0%</span><br><span class="line"> ....</span><br></pre></td></tr></table></figure>
+
+
+<p>方法2. 通过pip安装官方已经编译好的文件</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">a.下载whl</span><br><span class="line">	下载官方编译好的python安装包</span><br><span class="line">	地址[1](https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl)</span><br><span class="line">	地址[2](https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl)</span><br><span class="line">	地址1仅仅支持cpu，这里我们选择支持GPU的地址2</span><br><span class="line"></span><br><span class="line">b.开始安装</span><br><span class="line">	pip install --upgrade tensorflow-0.9.0-cp27-none-linux_x86_64.whl</span><br><span class="line"><span class="meta">	#</span><span class="bash">上述命令会安装python的一些其他包</span></span><br><span class="line">	numpy, protobuf, wheel, setuptools</span><br><span class="line">	如果中间有安装失败的包，自己手动安装即可。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里需要注意的是，如果python当前采用的是Anaconda python，那么在安装setuptools的时候有可能出现 Cannot remove entries from nonexistent file, 这其实是Anaconda的一个bug，主要原因是关于setuptools的一个文件不存在。解决方法如下</p>
+</blockquote>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c.Anaconda python 升级setuptools</span><br><span class="line">  去pypi官网 https://pypi.python.org/pypi/setuptools#using-setuptools-and-easyinstall</span><br><span class="line">  下载ez_setup.py</span><br><span class="line">  python ez_setup.py</span><br><span class="line"></span><br><span class="line">等待片刻成功安装setuptools最新版，并不报错，再执行命令安装tensorflow即可！</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
+            
+              <a href="/tags/centos/" rel="tag"># centos</a>
+            
+              <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag"># 服务器环境搭建</a>
+            
+              <a href="/tags/CUDA/" rel="tag"># CUDA</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2015/12/24/usage-of-hexo/" rel="next" title="hexo使用问题小结">
+                  <i class="fa fa-chevron-left"></i> hexo使用问题小结
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2016/07/25/usage-of-FFmpeg/" rel="prev" title="FFmpeg的使用">
+                  FFmpeg的使用 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-制作启动U盘"><span class="nav-number">1.</span> <span class="nav-text">1. 制作启动U盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装系统"><span class="nav-number">2.</span> <span class="nav-text">2. 安装系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-配置软件源"><span class="nav-number">3.</span> <span class="nav-text">3. 配置软件源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Ubuntu-14-04配置软件源"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Ubuntu 14.04配置软件源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Centos-7配置软件源"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Centos 7配置软件源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-配置python的pip源"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 配置python的pip源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-安装gcc-gcc-c-cmake"><span class="nav-number">4.</span> <span class="nav-text">4. 安装gcc, gcc-c++, cmake</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-配置ssh和添加用户"><span class="nav-number">5.</span> <span class="nav-text">5. 配置ssh和添加用户</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Ubuntu-安装ssh-server"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Ubuntu 安装ssh server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-centos设置ssh-server"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 centos设置ssh server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-添加用户"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 添加用户</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-用户主目录分区挂载"><span class="nav-number">6.</span> <span class="nav-text">6. 用户主目录分区挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-利用parted对电脑其他盘进行分区和挂载到用户目录"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 利用parted对电脑其他盘进行分区和挂载到用户目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-开始挂载分区"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 开始挂载分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-配置-ftp"><span class="nav-number">7.</span> <span class="nav-text">7. 配置 ftp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-安装CUDA-cudNNs"><span class="nav-number">8.</span> <span class="nav-text">8. 安装CUDA, cudNNs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-安装FFmpeg"><span class="nav-number">9.</span> <span class="nav-text">9. 安装FFmpeg</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-源码编译安装opencv-2-4-xx"><span class="nav-number">10.</span> <span class="nav-text">10. 源码编译安装opencv 2.4.xx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-安装tensorflow"><span class="nav-number">11.</span> <span class="nav-text">11. 安装tensorflow</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="bobo">
+  <p class="site-author-name" itemprop="name">bobo</p>
+  <div class="site-description" itemprop="description">谋事在人,成事在天！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bobo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/pjax/pjax.min.js?v=0.2.8"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.2"></script><script src="/js/motion.js?v=7.4.2"></script>
+<script src="/js/schemes/pisces.js?v=7.4.2"></script>
+
+<script src="/js/next-boot.js?v=7.4.2"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.2"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+
+  
+
+    </div>
+</body>
+</html>
